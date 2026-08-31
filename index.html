@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Unicorn Story Time</title>
+<meta name="description" content="A choose-your-own-adventure unicorn story.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2A1B47">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Story Time">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="stars" aria-hidden="true"></div>
+
+<!-- ============ TITLE / SAVE SLOTS ============ -->
+<section id="scr-title" class="screen active">
+  <div class="scroll-area center-col">
+    <div class="title-art">🦄</div>
+    <h1 class="game-title">Unicorn<br>Story Time</h1>
+    <p class="game-sub">The Glimmerlight Chronicles</p>
+    <div id="slot-list" class="slot-list"></div>
+    <p class="tiny-note">Your adventure saves by itself on this device.</p>
+  </div>
+</section>
+
+<!-- ============ NEW GAME / NAMING ============ -->
+<section id="scr-new" class="screen">
+  <div class="scroll-area">
+    <h2 class="screen-title">Your Unicorn</h2>
+    <div class="unicorn-stage" id="new-unicorn"></div>
+    <label class="field-label" for="uname">What is your unicorn's name?</label>
+    <input id="uname" class="name-input" type="text" maxlength="16" placeholder="Type a name…" autocomplete="off">
+    <div class="picker-block">
+      <div class="picker-label">Coat</div>
+      <div id="new-coats" class="chip-row"></div>
+    </div>
+    <div class="picker-block">
+      <div class="picker-label">Mane</div>
+      <div id="new-manes" class="chip-row"></div>
+    </div>
+    <p class="tiny-note">You can change all of this later in the Stable, and you'll earn lots more.</p>
+  </div>
+  <div class="bottom-actions">
+    <button class="btn ghost" onclick="UI.showScreen('scr-title')">← Back</button>
+    <button class="btn primary" id="begin-btn">Begin the Story ✨</button>
+  </div>
+</section>
+
+<!-- ============ STORY ============ -->
+<section id="scr-story" class="screen">
+  <header class="topbar">
+    <button class="icon-btn" id="btn-back" title="Go back one step">⏪</button>
+    <div class="topbar-mid">
+      <div class="chapter-name" id="chapter-name">Chapter One</div>
+      <div class="chapter-sub" id="chapter-sub"></div>
+    </div>
+    <button class="icon-btn" id="btn-menu" title="Menu">☰</button>
+  </header>
+
+  <div class="scroll-area" id="story-scroll">
+    <div class="story-art" id="story-art">🌄</div>
+    <div class="story-text" id="story-text"></div>
+    <div class="choices" id="choices"></div>
+    <div class="puzzle" id="puzzle" hidden></div>
+  </div>
+
+  <nav class="tabbar">
+    <button class="tab active" data-go="story">📖<span>Story</span></button>
+    <button class="tab" data-go="map">🗺️<span>Map</span></button>
+    <button class="tab" data-go="stable">🎠<span>Stable</span></button>
+    <button class="tab" data-go="bag">🎒<span>Bag</span></button>
+  </nav>
+</section>
+
+<!-- ============ CHAPTER MAP ============ -->
+<section id="scr-map" class="screen">
+  <header class="topbar"><div class="topbar-mid"><div class="chapter-name">Your Journey</div></div></header>
+  <div class="scroll-area" id="map-list"></div>
+  <nav class="tabbar">
+    <button class="tab" data-go="story">📖<span>Story</span></button>
+    <button class="tab active" data-go="map">🗺️<span>Map</span></button>
+    <button class="tab" data-go="stable">🎠<span>Stable</span></button>
+    <button class="tab" data-go="bag">🎒<span>Bag</span></button>
+  </nav>
+</section>
+
+<!-- ============ STABLE ============ -->
+<section id="scr-stable" class="screen">
+  <header class="topbar"><div class="topbar-mid"><div class="chapter-name" id="stable-title">The Stable</div><div class="chapter-sub" id="stable-count"></div></div></header>
+  <div class="scroll-area">
+    <div class="unicorn-stage big" id="stable-unicorn"></div>
+    <div class="slot-tabs" id="slot-tabs"></div>
+    <div class="cosmetic-grid" id="cosmetic-grid"></div>
+    <h3 class="section-h">🔒 Still to earn</h3>
+    <div id="unlock-list" class="unlock-list"></div>
+  </div>
+  <nav class="tabbar">
+    <button class="tab" data-go="story">📖<span>Story</span></button>
+    <button class="tab" data-go="map">🗺️<span>Map</span></button>
+    <button class="tab active" data-go="stable">🎠<span>Stable</span></button>
+    <button class="tab" data-go="bag">🎒<span>Bag</span></button>
+  </nav>
+</section>
+
+<!-- ============ BAG (treasures / words / badges) ============ -->
+<section id="scr-bag" class="screen">
+  <header class="topbar"><div class="topbar-mid"><div class="chapter-name">Your Bag</div></div></header>
+  <div class="seg" id="bag-seg">
+    <button class="seg-btn active" data-bag="treasures">💎 Treasures</button>
+    <button class="seg-btn" data-bag="words">📚 Words</button>
+    <button class="seg-btn" data-bag="badges">🏅 Badges</button>
+  </div>
+  <div class="scroll-area" id="bag-body"></div>
+  <nav class="tabbar">
+    <button class="tab" data-go="story">📖<span>Story</span></button>
+    <button class="tab" data-go="map">🗺️<span>Map</span></button>
+    <button class="tab" data-go="stable">🎠<span>Stable</span></button>
+    <button class="tab active" data-go="bag">🎒<span>Bag</span></button>
+  </nav>
+</section>
+
+<!-- ============ POPUPS ============ -->
+<div id="word-pop" class="pop" hidden>
+  <div class="pop-card word-card">
+    <div class="pop-emoji">📖</div>
+    <h3 id="word-title"></h3>
+    <p id="word-def"></p>
+    <div class="pop-tag" id="word-tag"></div>
+    <button class="btn primary full" onclick="UI.closePop('word-pop')">Got it</button>
+  </div>
+</div>
+
+<div id="reward-pop" class="pop" hidden>
+  <div class="pop-card reward-card">
+    <div class="sparkles" aria-hidden="true"></div>
+    <div class="pop-kind" id="reward-kind"></div>
+    <div class="pop-emoji big" id="reward-emoji">✨</div>
+    <h3 id="reward-name"></h3>
+    <p id="reward-desc"></p>
+    <button class="btn primary full" id="reward-ok">Wonderful!</button>
+  </div>
+</div>
+
+<div id="menu-pop" class="pop" hidden>
+  <div class="pop-card menu-card">
+    <h3>Menu</h3>
+    <button class="menu-item" data-go="map">🗺️ Chapter map</button>
+    <button class="menu-item" data-go="stable">🎠 The Stable</button>
+    <button class="menu-item" data-go="bag">🎒 Your bag</button>
+    <button class="menu-item" id="menu-back">⏪ Go back one step</button>
+    <button class="menu-item warn" id="menu-restart">🔄 Start this story fresh</button>
+    <button class="menu-item" id="menu-switch">👥 Switch saved game</button>
+    <button class="btn ghost full" onclick="UI.closePop('menu-pop')">Close</button>
+  </div>
+</div>
+
+<div id="confirm-pop" class="pop" hidden>
+  <div class="pop-card">
+    <div class="pop-emoji">🤔</div>
+    <h3 id="confirm-title">Are you sure?</h3>
+    <p id="confirm-text"></p>
+    <button class="btn danger full" id="confirm-yes">Yes, do it</button>
+    <button class="btn ghost full" onclick="UI.closePop('confirm-pop')">No, never mind</button>
+  </div>
+</div>
+
+<script src="data/words.js"></script>
+<script src="data/rewards.js"></script>
+<script src="data/story.js"></script>
+<script src="js/unicorn.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
